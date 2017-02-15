@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.3.1/css/bulma.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+</head>
+
+<body>
+  <div>
+    <section class="hero is-dark is-fullheight">
+  <!-- Hero header: will stick at the top -->
+  <div class="hero-head">
+    <header class="nav">
+      <div class="container">
+        <div class="nav-left">
+          <a class="nav-item">
+            <h1 class="title is-1">Dashboard</h1>
+          </a>
+        </div>
+        <span class="nav-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+        <div class="nav-right nav-menu">
+          <span class="nav-item">
+            <a class="button is-success is-inverted">
+              <span class="icon">
+                <i class="fa fa-github"></i>
+              </span>
+              <span>Download</span>
+            </a>
+          </span>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <!-- Hero content: will be in the middle -->
+  <div class="hero-body">
+    <div class="container has-text-centered" id="app">
+      <h1 class="title">
+        Title
+      </h1>
+      <h2 class="subtitle">
+        Subtitle
+      </h2>
+    </div>
+  </div>
+
+  <!-- Hero footer: will stick at the bottom -->
+  <div class="hero-foot">
+    <nav class="tabs is-boxed is-fullwidth">
+      <div class="container">
+        <ul>
+          <li class="is-active"><a>Overview</a></li>
+          <li><a>Stats 1</a></li>
+          <li><a>Stats 2</a></li>
+          <li><a>Stats 3</a></li>
+          <li><a>Stats 4</a></li>
+          <li><a>Stats 5</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</section>
+  </div>
+  <script src="bundle.js"></script>
+  <script>
+    var app = Elm.Main.embed(document.getElementById("app"));
+  </script>
+  <section class="hero is-primary is-medium">
+
+</body>
+
+</html>
