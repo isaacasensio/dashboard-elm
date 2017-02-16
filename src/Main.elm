@@ -2,7 +2,10 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import RemainingDaysWidget as Widget
+import RemainingDays.Widget as RemainingDaysWidget
+import RemainingDays.Model as RemainingDaysModel exposing (..)
+import RemainingDays.Msg as RemainingDaysMsg exposing (..)
+import RemainingDays.View as RemainingDaysView exposing (..)
 import Date exposing (Month(..))
 import Date.Extra as Date
 
@@ -11,14 +14,15 @@ import Date.Extra as Date
 
 
 type alias AppModel =
-    { widgetModel : Widget.Model
+    { widgetModel : RemainingDaysModel.Model
     }
 
 
-todayWidgetModel : Widget.Model
+todayWidgetModel : RemainingDaysModel.Model
 todayWidgetModel =
     { startDate = Nothing
-    , endDate = Just (Date.fromCalendarDate 2017 Feb 18)
+    , endDate = Just (Date.fromCalendarDate 2017 Mar 31)
+    , description = "Days since last incident"
     }
 
 
@@ -38,7 +42,7 @@ init =
 
 
 type Msg
-    = WidgetMsg Widget.Msg
+    = WidgetMsg RemainingDaysMsg.Msg
 
 
 
@@ -54,23 +58,23 @@ view model =
                     [ div [ class "tile" ]
                         [ div [ class "tile is-parent is-vertical" ]
                             [ div [ class "tile is-child notification is-primary" ]
-                                [ Html.map WidgetMsg (Widget.view model.widgetModel) ]
+                                [ Html.map WidgetMsg (RemainingDaysView.view model.widgetModel) ]
                             , div [ class "tile is-child notification is-warning" ]
-                                []
+                                [ Html.map WidgetMsg (RemainingDaysView.view model.widgetModel) ]
                             ]
                         , div [ class "tile is-parent" ]
                             [ div [ class "tile is-child notification is-info" ]
-                                []
+                                [ Html.map WidgetMsg (RemainingDaysView.view model.widgetModel) ]
                             ]
                         ]
                     , div [ class "tile is-parent" ]
                         [ div [ class "tile is-child notification is-danger" ]
-                            []
+                            [ Html.map WidgetMsg (RemainingDaysView.view model.widgetModel) ]
                         ]
                     ]
                 , div [ class "tile is-parent" ]
                     [ div [ class "tile is-child notification is-success" ]
-                        []
+                        [ Html.map WidgetMsg (RemainingDaysView.view model.widgetModel) ]
                     ]
                 ]
             ]
@@ -87,7 +91,7 @@ update message model =
         WidgetMsg subMsg ->
             let
                 ( updatedWidgetModel, widgetCmd ) =
-                    Widget.update subMsg model.widgetModel
+                    RemainingDaysWidget.update subMsg model.widgetModel
             in
                 ( { model | widgetModel = updatedWidgetModel }, Cmd.map WidgetMsg widgetCmd )
 
@@ -99,7 +103,7 @@ update message model =
 subscriptions : AppModel -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Sub.map WidgetMsg (Widget.subscriptions model.widgetModel) ]
+        [ Sub.map WidgetMsg (RemainingDaysWidget.subscriptions model.widgetModel) ]
 
 
 
