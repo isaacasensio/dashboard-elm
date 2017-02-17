@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.3.1/css/bulma.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
   <link rel="stylesheet" href="custom.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
 </head>
 
 <body>
@@ -70,9 +71,44 @@
   </div>
 </section>
   </div>
+  <canvas id="updating-chart" width="100" height="50"></canvas>
   <script src="bundle.js"></script>
   <script>
     var app = Elm.Main.embed(document.getElementById("app"));
+
+    app.ports.toJs.subscribe(function(data) {
+        myLiveChart.data.labels.push(parseInt(data));
+
+        myLiveChart.data.datasets.forEach(function(dataset, index) {
+            dataset.data.push(parseInt(data) * Math.random()); // add new data at end
+            if(dataset.data.length > 50)
+              dataset.data.splice(0, 1); // remove first data point
+        });
+
+        myLiveChart.update();
+    });
+
+    var canvas = document.getElementById('updating-chart'),
+    ctx = canvas.getContext('2d'),
+    startingData = {
+      datasets: [
+          {
+              label : "Example",
+              fillColor: "rgba(220,220,220,0.2)",
+              strokeColor: "rgba(220,220,220,1)",
+              pointColor: "rgba(220,220,220,1)",
+              pointStrokeColor: "#fff"
+          }
+      ]
+    };
+
+    // Reduce the animation steps for demo clarity.
+    var myLiveChart = new Chart(ctx, {
+              type: "line",
+              data: startingData
+          });
+
+
   </script>
   <section class="hero is-primary is-medium">
 

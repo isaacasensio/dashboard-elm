@@ -1,4 +1,4 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -8,6 +8,13 @@ import Time exposing (Time, minute, hour, second)
 import Date.Extra as Date
 import Date exposing (Month(..))
 import Task exposing (..)
+
+
+-- PORTS
+
+
+port toJs : String -> Cmd msg
+
 
 
 -- MODEL
@@ -55,6 +62,7 @@ type Msg
     | UpdateCounterMsg Time
     | InitRemainingDaysMsg RemainingDays.Msg
     | UpdateRemainingDaysMsg Time
+    | SayHi Time
 
 
 
@@ -100,6 +108,10 @@ view model =
 update : Msg -> AppModel -> ( AppModel, Cmd Msg )
 update message model =
     case message of
+        SayHi time ->
+            Debug.log (toString (Date.second (Date.fromTime time)))
+                ( model, toJs (toString (Date.second (Date.fromTime time))) )
+
         UpdateCounterMsg _ ->
             let
                 counter =
@@ -126,6 +138,7 @@ subscriptions model =
     Sub.batch
         [ Time.every minute UpdateCounterMsg
         , Time.every minute UpdateRemainingDaysMsg
+        , Time.every second SayHi
         ]
 
 
