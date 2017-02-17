@@ -2,7 +2,7 @@ module Tests exposing (..)
 
 import Test exposing (..)
 import Expect
-import RemainingDays.Model as RemainingDaysModel
+import RemainingDays
 import Date exposing (..)
 import Date.Extra as Date exposing (..)
 
@@ -29,7 +29,7 @@ all =
             [ test "returns 0 when startDate is not provided" <|
                 \() ->
                     Expect.equal 0
-                        (RemainingDaysModel.remaining
+                        (RemainingDays.remaining
                             { startDate = Nothing
                             , endDate = maybeCurrentDate
                             , description = "Title"
@@ -38,7 +38,7 @@ all =
             , test "returns 0 when endDate is not provided" <|
                 \() ->
                     Expect.equal 0
-                        (RemainingDaysModel.remaining
+                        (RemainingDays.remaining
                             { startDate = maybeCurrentDate
                             , endDate = Nothing
                             , description = "Title"
@@ -47,7 +47,7 @@ all =
             , test "returns 0 when both dates are not provided" <|
                 \() ->
                     Expect.equal 0
-                        (RemainingDaysModel.remaining
+                        (RemainingDays.remaining
                             { startDate = Nothing
                             , endDate = Nothing
                             , description = "Title"
@@ -56,7 +56,7 @@ all =
             , test "returns 14 when difference between days is 2 weeks" <|
                 \() ->
                     Expect.equal 14
-                        (RemainingDaysModel.remaining
+                        (RemainingDays.remaining
                             { startDate = maybeCurrentDate
                             , endDate = maybeTwoDaysAfterCurrentDate
                             , description = "Title"
@@ -71,7 +71,7 @@ all =
                         , endDate = maybeTwoDaysAfterCurrentDate
                         , description = "Title"
                         }
-                        (RemainingDaysModel.updateTodayDate
+                        (RemainingDays.updateTodayDate
                             { startDate = Nothing
                             , endDate = maybeTwoDaysAfterCurrentDate
                             , description = "Title"

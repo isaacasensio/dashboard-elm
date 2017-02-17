@@ -1,5 +1,7 @@
-module RemainingDays.Model exposing (remaining, Model, initialModel, updateTodayDate)
+module RemainingDays exposing (Model, Msg(Update, NoOp), view, update, remaining, updateTodayDate)
 
+import Html exposing (..)
+import Html.Attributes exposing (..)
 import Date exposing (..)
 import Date exposing (Month(..))
 import Date.Extra exposing (..)
@@ -13,9 +15,13 @@ type alias Model =
     }
 
 
-initialModel : Model
-initialModel =
-    Model Nothing Nothing "Title"
+type Msg
+    = Update Time
+    | NoOp
+
+
+
+-- MODEL
 
 
 updateTodayDate : Model -> Time -> Model
@@ -36,3 +42,31 @@ remaining model =
 
                 Just endDate ->
                     Date.Extra.diff Day startDate endDate
+
+
+
+-- UPDATE
+
+
+update : Msg -> Model -> Model
+update msg model =
+    case msg of
+        NoOp ->
+            model
+
+        Update time ->
+            { model | startDate = Just (Date.fromTime time) }
+
+
+
+-- VIEWS
+
+
+view : Model -> Html Msg
+view model =
+    div []
+        [ p []
+            [ h2 [ class "title is-2" ] [ text (model.description) ]
+            , p [ class "days-left" ] [ text (toString (remaining model)) ]
+            ]
+        ]

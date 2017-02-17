@@ -2,39 +2,48 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import RemainingDays.Widget as RemainingDaysWidget
-import RemainingDays.Model as RemainingDaysModel exposing (..)
-import RemainingDays.Msg as RemainingDaysMsg exposing (..)
-import RemainingDays.View as RemainingDaysView exposing (..)
-import Date exposing (Month(..))
+import Counter
+import RemainingDays
+import Time exposing (Time, minute, hour, second)
 import Date.Extra as Date
+import Date exposing (Month(..))
+import Task exposing (..)
 
 
 -- MODEL
 
 
 type alias AppModel =
-    { widgetModel : RemainingDaysModel.Model
+    { counterModel : Counter.Model
+    , remainingDaysModel : RemainingDays.Model
     }
 
 
-todayWidgetModel : RemainingDaysModel.Model
-todayWidgetModel =
-    { startDate = Nothing
-    , endDate = Just (Date.fromCalendarDate 2017 Mar 31)
-    , description = "Days since last incident"
-    }
+counterModel : Counter.Model
+counterModel =
+    Counter.Model 1 "My Counter"
+
+
+remainingDatesModel : RemainingDays.Model
+remainingDatesModel =
+    RemainingDays.Model
+        Nothing
+        (Just (Date.fromCalendarDate 2017 Mar 31))
+        "My Remaining days"
 
 
 initialModel : AppModel
 initialModel =
-    { widgetModel = todayWidgetModel
+    { counterModel = counterModel
+    , remainingDaysModel = remainingDatesModel
     }
 
 
 init : ( AppModel, Cmd Msg )
 init =
-    ( initialModel, Cmd.none )
+    ( initialModel
+    , Task.perform UpdateRemainingDaysMsg Time.now
+    )
 
 
 
@@ -42,7 +51,10 @@ init =
 
 
 type Msg
-    = WidgetMsg RemainingDaysMsg.Msg
+    = InitCounterMsg Counter.Msg
+    | UpdateCounterMsg Time
+    | InitRemainingDaysMsg RemainingDays.Msg
+    | UpdateRemainingDaysMsg Time
 
 
 
@@ -58,23 +70,23 @@ view model =
                     [ div [ class "tile" ]
                         [ div [ class "tile is-parent is-vertical" ]
                             [ div [ class "tile is-child notification is-primary" ]
-                                [ Html.map WidgetMsg (RemainingDaysView.view model.widgetModel) ]
+                                [ Html.map InitCounterMsg (Counter.view model.counterModel) ]
                             , div [ class "tile is-child notification is-warning" ]
-                                [ Html.map WidgetMsg (RemainingDaysView.view model.widgetModel) ]
+                                [ Html.map InitRemainingDaysMsg (RemainingDays.view model.remainingDaysModel) ]
                             ]
                         , div [ class "tile is-parent" ]
                             [ div [ class "tile is-child notification is-info" ]
-                                [ Html.map WidgetMsg (RemainingDaysView.view model.widgetModel) ]
+                                [ Html.map InitCounterMsg (Counter.view model.counterModel) ]
                             ]
                         ]
                     , div [ class "tile is-parent" ]
                         [ div [ class "tile is-child notification is-danger" ]
-                            [ Html.map WidgetMsg (RemainingDaysView.view model.widgetModel) ]
+                            [ Html.map InitCounterMsg (Counter.view model.counterModel) ]
                         ]
                     ]
                 , div [ class "tile is-parent" ]
                     [ div [ class "tile is-child notification is-success" ]
-                        [ Html.map WidgetMsg (RemainingDaysView.view model.widgetModel) ]
+                        [ Html.map InitCounterMsg (Counter.view model.counterModel) ]
                     ]
                 ]
             ]
@@ -88,12 +100,21 @@ view model =
 update : Msg -> AppModel -> ( AppModel, Cmd Msg )
 update message model =
     case message of
-        WidgetMsg subMsg ->
+        UpdateCounterMsg _ ->
             let
-                ( updatedWidgetModel, widgetCmd ) =
-                    RemainingDaysWidget.update subMsg model.widgetModel
+                counter =
+                    (model.counterModel.count + 1)
             in
-                ( { model | widgetModel = updatedWidgetModel }, Cmd.map WidgetMsg widgetCmd )
+                ( { model | counterModel = Counter.update (Counter.SetNum counter) model.counterModel }, Cmd.none )
+
+        UpdateRemainingDaysMsg time ->
+            ( { model | remainingDaysModel = RemainingDays.update (RemainingDays.Update time) model.remainingDaysModel }, Cmd.none )
+
+        InitCounterMsg _ ->
+            ( { model | counterModel = Counter.update Counter.NoOp model.counterModel }, Cmd.none )
+
+        InitRemainingDaysMsg _ ->
+            ( { model | remainingDaysModel = RemainingDays.update (RemainingDays.NoOp) model.remainingDaysModel }, Cmd.none )
 
 
 
@@ -103,7 +124,9 @@ update message model =
 subscriptions : AppModel -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Sub.map WidgetMsg (RemainingDaysWidget.subscriptions model.widgetModel) ]
+        [ Time.every minute UpdateCounterMsg
+        , Time.every minute UpdateRemainingDaysMsg
+        ]
 
 
 

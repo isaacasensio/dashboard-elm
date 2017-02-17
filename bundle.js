@@ -10455,53 +10455,7 @@ var _justinmimbs$elm_date_extra$Date_Extra$equalBy = F3(
 var _justinmimbs$elm_date_extra$Date_Extra$Second = {ctor: 'Second'};
 var _justinmimbs$elm_date_extra$Date_Extra$Millisecond = {ctor: 'Millisecond'};
 
-var _user$project$RemainingDays_Model$remaining = function (model) {
-	var _p0 = model.startDate;
-	if (_p0.ctor === 'Nothing') {
-		return 0;
-	} else {
-		var _p1 = model.endDate;
-		if (_p1.ctor === 'Nothing') {
-			return 0;
-		} else {
-			return A3(_justinmimbs$elm_date_extra$Date_Extra$diff, _justinmimbs$elm_date_extra$Date_Extra$Day, _p0._0, _p1._0);
-		}
-	}
-};
-var _user$project$RemainingDays_Model$updateTodayDate = F2(
-	function (model, time) {
-		return _elm_lang$core$Native_Utils.update(
-			model,
-			{
-				startDate: _elm_lang$core$Maybe$Just(
-					_elm_lang$core$Date$fromTime(time))
-			});
-	});
-var _user$project$RemainingDays_Model$Model = F3(
-	function (a, b, c) {
-		return {startDate: a, endDate: b, description: c};
-	});
-var _user$project$RemainingDays_Model$initialModel = A3(_user$project$RemainingDays_Model$Model, _elm_lang$core$Maybe$Nothing, _elm_lang$core$Maybe$Nothing, 'Title');
-
-var _user$project$RemainingDays_Msg$Tick = function (a) {
-	return {ctor: 'Tick', _0: a};
-};
-
-var _user$project$RemainingDays_Widget$subscriptions = function (model) {
-	return A2(_elm_lang$core$Time$every, _elm_lang$core$Time$second, _user$project$RemainingDays_Msg$Tick);
-};
-var _user$project$RemainingDays_Widget$update = F2(
-	function (msg, model) {
-		var _p0 = msg;
-		return {
-			ctor: '_Tuple2',
-			_0: A2(_user$project$RemainingDays_Model$updateTodayDate, model, _p0._0),
-			_1: _elm_lang$core$Platform_Cmd$none
-		};
-	});
-var _user$project$RemainingDays_Widget$init = {ctor: '_Tuple2', _0: _user$project$RemainingDays_Model$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
-
-var _user$project$RemainingDays_View$view = function (model) {
+var _user$project$Counter$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},
@@ -10536,9 +10490,7 @@ var _user$project$RemainingDays_View$view = function (model) {
 							{
 								ctor: '::',
 								_0: _elm_lang$html$Html$text(
-									_elm_lang$core$String$toUpper(
-										_elm_lang$core$Basics$toString(
-											_user$project$RemainingDays_Model$remaining(model)))),
+									_elm_lang$core$Basics$toString(model.count)),
 								_1: {ctor: '[]'}
 							}),
 						_1: {ctor: '[]'}
@@ -10547,20 +10499,211 @@ var _user$project$RemainingDays_View$view = function (model) {
 			_1: {ctor: '[]'}
 		});
 };
+var _user$project$Counter$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		if (_p0.ctor === 'NoOp') {
+			return model;
+		} else {
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{count: _p0._0});
+		}
+	});
+var _user$project$Counter$Model = F2(
+	function (a, b) {
+		return {count: a, description: b};
+	});
+var _user$project$Counter$initialModel = A2(_user$project$Counter$Model, 0, 'Counter');
+var _user$project$Counter$init = {ctor: '_Tuple2', _0: _user$project$Counter$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$Counter$NoOp = {ctor: 'NoOp'};
+var _user$project$Counter$SetNum = function (a) {
+	return {ctor: 'SetNum', _0: a};
+};
 
-var _user$project$Main$todayWidgetModel = {
-	startDate: _elm_lang$core$Maybe$Nothing,
-	endDate: _elm_lang$core$Maybe$Just(
+var _user$project$RemainingDays$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		if (_p0.ctor === 'NoOp') {
+			return model;
+		} else {
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{
+					startDate: _elm_lang$core$Maybe$Just(
+						_elm_lang$core$Date$fromTime(_p0._0))
+				});
+		}
+	});
+var _user$project$RemainingDays$remaining = function (model) {
+	var _p1 = model.startDate;
+	if (_p1.ctor === 'Nothing') {
+		return 0;
+	} else {
+		var _p2 = model.endDate;
+		if (_p2.ctor === 'Nothing') {
+			return 0;
+		} else {
+			return A3(_justinmimbs$elm_date_extra$Date_Extra$diff, _justinmimbs$elm_date_extra$Date_Extra$Day, _p1._0, _p2._0);
+		}
+	}
+};
+var _user$project$RemainingDays$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$p,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$h2,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('title is-2'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(model.description),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$p,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('days-left'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(
+									_elm_lang$core$Basics$toString(
+										_user$project$RemainingDays$remaining(model))),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$RemainingDays$updateTodayDate = F2(
+	function (model, time) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				startDate: _elm_lang$core$Maybe$Just(
+					_elm_lang$core$Date$fromTime(time))
+			});
+	});
+var _user$project$RemainingDays$Model = F3(
+	function (a, b, c) {
+		return {startDate: a, endDate: b, description: c};
+	});
+var _user$project$RemainingDays$NoOp = {ctor: 'NoOp'};
+var _user$project$RemainingDays$Update = function (a) {
+	return {ctor: 'Update', _0: a};
+};
+
+var _user$project$Main$update = F2(
+	function (message, model) {
+		var _p0 = message;
+		switch (_p0.ctor) {
+			case 'UpdateCounterMsg':
+				var counter = model.counterModel.count + 1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							counterModel: A2(
+								_user$project$Counter$update,
+								_user$project$Counter$SetNum(counter),
+								model.counterModel)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'UpdateRemainingDaysMsg':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							remainingDaysModel: A2(
+								_user$project$RemainingDays$update,
+								_user$project$RemainingDays$Update(_p0._0),
+								model.remainingDaysModel)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'InitCounterMsg':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							counterModel: A2(_user$project$Counter$update, _user$project$Counter$NoOp, model.counterModel)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							remainingDaysModel: A2(_user$project$RemainingDays$update, _user$project$RemainingDays$NoOp, model.remainingDaysModel)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
+var _user$project$Main$remainingDatesModel = A3(
+	_user$project$RemainingDays$Model,
+	_elm_lang$core$Maybe$Nothing,
+	_elm_lang$core$Maybe$Just(
 		A3(_justinmimbs$elm_date_extra$Date_Extra$fromCalendarDate, 2017, _elm_lang$core$Date$Mar, 31)),
-	description: 'Days since last incident'
+	'My Remaining days');
+var _user$project$Main$counterModel = A2(_user$project$Counter$Model, 1, 'My Counter');
+var _user$project$Main$initialModel = {counterModel: _user$project$Main$counterModel, remainingDaysModel: _user$project$Main$remainingDatesModel};
+var _user$project$Main$AppModel = F2(
+	function (a, b) {
+		return {counterModel: a, remainingDaysModel: b};
+	});
+var _user$project$Main$UpdateRemainingDaysMsg = function (a) {
+	return {ctor: 'UpdateRemainingDaysMsg', _0: a};
 };
-var _user$project$Main$initialModel = {widgetModel: _user$project$Main$todayWidgetModel};
-var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
-var _user$project$Main$AppModel = function (a) {
-	return {widgetModel: a};
+var _user$project$Main$init = {
+	ctor: '_Tuple2',
+	_0: _user$project$Main$initialModel,
+	_1: A2(_elm_lang$core$Task$perform, _user$project$Main$UpdateRemainingDaysMsg, _elm_lang$core$Time$now)
 };
-var _user$project$Main$WidgetMsg = function (a) {
-	return {ctor: 'WidgetMsg', _0: a};
+var _user$project$Main$InitRemainingDaysMsg = function (a) {
+	return {ctor: 'InitRemainingDaysMsg', _0: a};
+};
+var _user$project$Main$UpdateCounterMsg = function (a) {
+	return {ctor: 'UpdateCounterMsg', _0: a};
+};
+var _user$project$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$batch(
+		{
+			ctor: '::',
+			_0: A2(_elm_lang$core$Time$every, _elm_lang$core$Time$minute, _user$project$Main$UpdateCounterMsg),
+			_1: {
+				ctor: '::',
+				_0: A2(_elm_lang$core$Time$every, _elm_lang$core$Time$minute, _user$project$Main$UpdateRemainingDaysMsg),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Main$InitCounterMsg = function (a) {
+	return {ctor: 'InitCounterMsg', _0: a};
 };
 var _user$project$Main$view = function (model) {
 	return A2(
@@ -10628,8 +10771,8 @@ var _user$project$Main$view = function (model) {
 															ctor: '::',
 															_0: A2(
 																_elm_lang$html$Html$map,
-																_user$project$Main$WidgetMsg,
-																_user$project$RemainingDays_View$view(model.widgetModel)),
+																_user$project$Main$InitCounterMsg,
+																_user$project$Counter$view(model.counterModel)),
 															_1: {ctor: '[]'}
 														}),
 													_1: {
@@ -10645,8 +10788,8 @@ var _user$project$Main$view = function (model) {
 																ctor: '::',
 																_0: A2(
 																	_elm_lang$html$Html$map,
-																	_user$project$Main$WidgetMsg,
-																	_user$project$RemainingDays_View$view(model.widgetModel)),
+																	_user$project$Main$InitRemainingDaysMsg,
+																	_user$project$RemainingDays$view(model.remainingDaysModel)),
 																_1: {ctor: '[]'}
 															}),
 														_1: {ctor: '[]'}
@@ -10674,8 +10817,8 @@ var _user$project$Main$view = function (model) {
 																ctor: '::',
 																_0: A2(
 																	_elm_lang$html$Html$map,
-																	_user$project$Main$WidgetMsg,
-																	_user$project$RemainingDays_View$view(model.widgetModel)),
+																	_user$project$Main$InitCounterMsg,
+																	_user$project$Counter$view(model.counterModel)),
 																_1: {ctor: '[]'}
 															}),
 														_1: {ctor: '[]'}
@@ -10705,8 +10848,8 @@ var _user$project$Main$view = function (model) {
 														ctor: '::',
 														_0: A2(
 															_elm_lang$html$Html$map,
-															_user$project$Main$WidgetMsg,
-															_user$project$RemainingDays_View$view(model.widgetModel)),
+															_user$project$Main$InitCounterMsg,
+															_user$project$Counter$view(model.counterModel)),
 														_1: {ctor: '[]'}
 													}),
 												_1: {ctor: '[]'}
@@ -10736,8 +10879,8 @@ var _user$project$Main$view = function (model) {
 												ctor: '::',
 												_0: A2(
 													_elm_lang$html$Html$map,
-													_user$project$Main$WidgetMsg,
-													_user$project$RemainingDays_View$view(model.widgetModel)),
+													_user$project$Main$InitCounterMsg,
+													_user$project$Counter$view(model.counterModel)),
 												_1: {ctor: '[]'}
 											}),
 										_1: {ctor: '[]'}
@@ -10747,31 +10890,6 @@ var _user$project$Main$view = function (model) {
 						}),
 					_1: {ctor: '[]'}
 				}),
-			_1: {ctor: '[]'}
-		});
-};
-var _user$project$Main$update = F2(
-	function (message, model) {
-		var _p0 = message;
-		var _p1 = A2(_user$project$RemainingDays_Widget$update, _p0._0, model.widgetModel);
-		var updatedWidgetModel = _p1._0;
-		var widgetCmd = _p1._1;
-		return {
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.update(
-				model,
-				{widgetModel: updatedWidgetModel}),
-			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Main$WidgetMsg, widgetCmd)
-		};
-	});
-var _user$project$Main$subscriptions = function (model) {
-	return _elm_lang$core$Platform_Sub$batch(
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$core$Platform_Sub$map,
-				_user$project$Main$WidgetMsg,
-				_user$project$RemainingDays_Widget$subscriptions(model.widgetModel)),
 			_1: {ctor: '[]'}
 		});
 };
