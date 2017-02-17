@@ -77,7 +77,10 @@
     var app = Elm.Main.embed(document.getElementById("app"));
 
     app.ports.toJs.subscribe(function(data) {
-        myLiveChart.data.labels.push(parseInt(data));
+
+      myLiveChart.data.labels.push(parseInt(data));
+      if(myLiveChart.data.labels.length > 50)
+        myLiveChart.data.labels.splice(0, 1);
 
         myLiveChart.data.datasets.forEach(function(dataset, index) {
             dataset.data.push(parseInt(data) * Math.random()); // add new data at end
