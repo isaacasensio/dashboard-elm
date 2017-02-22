@@ -4,16 +4,14 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Counter
 import RemainingDays
+import Chart
 import Time exposing (Time, minute, hour, second)
 import Date.Extra as Date
 import Date exposing (Month(..))
 import Task exposing (..)
 
 
--- PORTS
-
-
-port toJs : String -> Cmd msg
+port toJs : List Int -> Cmd msg
 
 
 
@@ -23,6 +21,7 @@ port toJs : String -> Cmd msg
 type alias AppModel =
     { counterModel : Counter.Model
     , remainingDaysModel : RemainingDays.Model
+    , chartModel : Chart.Model
     }
 
 
@@ -43,6 +42,7 @@ initialModel : AppModel
 initialModel =
     { counterModel = counterModel
     , remainingDaysModel = remainingDatesModel
+    , chartModel = Chart.initialModel
     }
 
 
@@ -62,7 +62,8 @@ type Msg
     | UpdateCounterMsg Time
     | InitRemainingDaysMsg RemainingDays.Msg
     | UpdateRemainingDaysMsg Time
-    | SayHi Time
+    | ChartMsg Time
+    | InitChartMsg Chart.Msg
 
 
 
@@ -89,7 +90,7 @@ view model =
                         ]
                     , div [ class "tile is-parent" ]
                         [ div [ class "tile is-child notification is-danger" ]
-                            [ Html.map InitCounterMsg (Counter.view model.counterModel) ]
+                            [ Html.map InitChartMsg (Chart.view model.chartModel) ]
                         ]
                     ]
                 , div [ class "tile is-parent" ]
@@ -108,9 +109,12 @@ view model =
 update : Msg -> AppModel -> ( AppModel, Cmd Msg )
 update message model =
     case message of
-        SayHi time ->
-            Debug.log (toString (Date.second (Date.fromTime time)))
-                ( model, toJs (toString (Date.second (Date.fromTime time))) )
+        ChartMsg time ->
+            let
+                ( chartModel, cmdMsg ) =
+                    Chart.update (Chart.GetData time) model.chartModel
+            in
+                ( { model | chartModel = chartModel }, toJs (model.chartModel.dataSet) )
 
         UpdateCounterMsg _ ->
             let
@@ -128,9 +132,21 @@ update message model =
         InitRemainingDaysMsg _ ->
             ( { model | remainingDaysModel = RemainingDays.update (RemainingDays.NoOp) model.remainingDaysModel }, Cmd.none )
 
+        InitChartMsg _ ->
+            let
+                ( chartModel, cmdMsg ) =
+                    Chart.update Chart.NoOp model.chartModel
+            in
+                ( { model | chartModel = chartModel }, Cmd.none )
+
 
 
 -- SUBSCRIPTIONS
+
+
+fiveSeconds : Time
+fiveSeconds =
+    5 * second
 
 
 subscriptions : AppModel -> Sub Msg
@@ -138,7 +154,7 @@ subscriptions model =
     Sub.batch
         [ Time.every minute UpdateCounterMsg
         , Time.every minute UpdateRemainingDaysMsg
-        , Time.every second SayHi
+        , Time.every fiveSeconds ChartMsg
         ]
 
 
